@@ -1,6 +1,6 @@
 import click
 
-from gopro_sync import MediaFileManager, filter_media
+from gopro_sync.media import MediaFileManager, filter_media
 
 
 @click.command()
