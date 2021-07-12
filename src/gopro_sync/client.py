@@ -1,9 +1,12 @@
+import logging
 from itertools import islice
 
 from bs4 import BeautifulSoup
 from requests import Session
 
 from .core import GoProFile
+
+logger = logging.getLogger(__name__)
 
 
 class GoProSyncException(Exception):
@@ -21,12 +24,14 @@ class GoProClient:
         self.http_session = Session()
 
     def __repr__(self):
-        return "f{self.__class__.__name__}(self.url)"
+        return f"{self.__class__.__name__}({self.url})"
 
     def get_entries(self):
-        response = self.http_session.get(self.url)
+        # response = self.http_session.get(self.url)
 
-        soup = BeautifulSoup(response.text, "lxml")
+        from gopro_sync.mocks.html_raw import go_pro_html_reponse  # noqa
+
+        soup = BeautifulSoup(go_pro_html_reponse, "lxml")
 
         trs = soup.find_all("tr", recursive=True)
         magic_offset = 3
@@ -47,18 +52,18 @@ class GoProClient:
 
         return list(map(_parse_gpf, raw_entries))
 
-    def fetch_file(self, gpf: GoProFile):
-        print(f"fetching {gpf = }")
+    def fetch_file(self, name, **kwargs):
+        print(f"fetching {name = }")
 
-        url = self.url + gpf.name.split("/")[-1]
+        url = self.url + name.split("/")[-1]
         local_filename = url.split("/")[-1]
         # NOTE the stream=True parameter below
-        with self.http_session.get(url, stream=True) as r:
-            r.raise_for_status()
-            with open(local_filename, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    # If you have chunk encoded response uncomment if
-                    # and set chunk_size parameter to None.
-                    # if chunk:
-                    f.write(chunk)
+        # with self.http_session.get(url, stream=True) as r:
+        #     r.raise_for_status()
+        #     with open(local_filename, "wb") as f:
+        #         for chunk in r.iter_content(chunk_size=8192):
+        #             # If you have chunk encoded response uncomment if
+        #             # and set chunk_size parameter to None.
+        #             # if chunk:
+        #             f.write(chunk)
         return local_filename

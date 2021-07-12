@@ -1,49 +1,49 @@
+import logging
+from collections import Counter
+
 import click
 
-from gopro_sync.media import MediaFileManager, filter_media
+from gopro_sync.media import MediaFileManager, MediaType
+
+logger = logging.getLogger(__name__)
+
+desanitize = lambda x: x.name.lower().replace("_", "-")
+sanitize = lambda x: x.upper().replace("-", "_")
+
+_choices = list(map(desanitize, list(MediaType)))
 
 
 @click.command()
 @click.option(
-    "--media",
-    default="image",
-    type=click.Choice(["image"], case_sensitive=False),
-    help="file type to fetch.",
+    "-m",
+    "--media-type",
+    required=True,
+    type=click.Choice(_choices, case_sensitive=False),
+    help="Media type to sync",
 )
-@click.option("--path", default="gopro-media", help="path to save files.")
-def gopro_sync_cli(media, path):
-    """sync images from go pro."""
-    mfm = MediaFileManager(sync_dir=path)
-    image_choices = "jpg raw all".split()
+@click.option(
+    "--path", type=click.Path(writable=True), help="Export files to local  path"
+)
+@click.option(
+    "--skip-lowres", default=True, show_default=True, help="Skip low resolution files"
+)
+def gopro_sync_cli(media_type, path, skip_lowres):
+    """Sync gopro media file via wifi."""
 
-    # jpg
-    # raw
-    # all
+    media_type = sanitize(media_type)
 
-    # video
-
-    # clean
-    # remove LVR ?
+    logger.info(media_type)
+    mfm = MediaFileManager(skip_lowres=skip_lowres)
     mfm.connect()
-    #
-    # if media.lower() == "image":
-    #     file_extension = "jpg"
-    # elif media.lower() == "video":
-    #     file_extension = "mp4"
-    # elif media.lower == "gpr":
-    #     #go pro raw file
-    #     file_extension = "GPR"
-    # elif media.lower == "LVR":
-    #     #go pro low resultion file for videos
-    #     pass
-    # elif media.lower == "thm":
-    #     #go pro thumb file images
-    #     pass
 
-    images = filter_media(mfm.media, file_extension="JPG")
-
-    for img in images:
-        mfm.fetch_file(img)
+    logger.info(Counter(map(lambda x: x.extension, mfm.media)))
+    candidate_files = mfm.export(MediaType[media_type], dry_run=True)
+    file_count = len(candidate_files)
+    logger.info(f"found {file_count} candidate file")
+    count = 1
+    for file in candidate_files:
+        mfm.client.fetch_file(file.name)
+        count += 1
 
 
 if __name__ == "__main__":
