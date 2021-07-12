@@ -6,6 +6,14 @@ from requests import Session
 from .core import GoProFile
 
 
+class GoProSyncException(Exception):
+    pass
+
+
+class GoProNotFound(GoProSyncException):
+    pass
+
+
 class GoProClient:
     url = "http://10.5.5.9/videos/DCIM/100GOPRO/"
 
