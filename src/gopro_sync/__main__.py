@@ -5,7 +5,7 @@ from gopro_sync.cli import gopro_sync_cli
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler("debug.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler("gopro-sync.log"), logging.StreamHandler()],
 )
 
 if __name__ == "__main__":

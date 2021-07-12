@@ -59,6 +59,7 @@ class MediaFileManager:
             path = Path(path)
 
         path = path.expanduser().absolute()
+        path.touch(exist_ok=True)
 
         target_files = sorted(
             filter_media(self.media, media_type), key=lambda x: x.modified
@@ -83,13 +84,11 @@ class MediaFileManager:
         return origin_files
 
     def fetch_file(self, mf: MediaFile, **kwargs):
-        self.client.fetch_file(mf.name, **kwargs)
+        buffer = self.client.fetch_file(mf.name, **kwargs)
 
 
 def filter_media(media_files: Iterable[MediaFile], media_type: MediaType):
     if media_type == MediaType.ALL:
-        return media_files
+        return iter(media_files)
 
-    for file in media_files:
-        if file.name.endswith(media_type.value):
-            yield file
+    return (file for file in media_files if file.name.endswith(media_type.value))
