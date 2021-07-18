@@ -6,3 +6,4 @@
 /dist
 *.log
 /.vscode
+/.python-version
