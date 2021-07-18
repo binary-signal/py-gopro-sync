@@ -3,3 +3,6 @@
 *.JPG
 .idea
 *.pyc
+/dist
+*.log
+/.vscode
