@@ -2,7 +2,7 @@ import datetime
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, List
 
 from .client import GoProClient
 from .core import GoProFile, parse_size
@@ -46,7 +46,7 @@ class MediaFileManager:
     def __init__(self, skip_lowres=True):
         self._skip_lowres = skip_lowres
         self.client = GoProClient()
-        self.media: list[MediaFile] = []
+        self.media: List[MediaFile] = []
 
     def connect(self):
         raw_files = self.client.get_entries()
@@ -73,7 +73,7 @@ class MediaFileManager:
         for mf in candidate_files:
             self.fetch_file(mf)
 
-    def _build_media_files(self, gpfiles: list[GoProFile]):
+    def _build_media_files(self, gpfiles: List[GoProFile]):
         origin_files = list(
             MediaFile(name=file.name, size=file.size, modified=file.modified)
             for file in gpfiles
