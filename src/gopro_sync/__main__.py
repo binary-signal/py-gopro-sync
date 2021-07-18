@@ -1,11 +1,13 @@
 import logging
 
+from rich.logging import RichHandler
+
 from gopro_sync.cli import gopro_sync_cli
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler("gopro-sync.log"), logging.StreamHandler()],
+    handlers=[RichHandler()],
 )
 
 if __name__ == "__main__":
