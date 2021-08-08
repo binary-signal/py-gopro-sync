@@ -46,6 +46,8 @@ Options:
  
  # How to
  
+ Assumes you have already connected your local computer somehow how to the go pro wifi!
+ 
  ## Sync images
  ```shell
  gopro-sync -m image
