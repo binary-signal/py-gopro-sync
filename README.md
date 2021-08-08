@@ -46,7 +46,7 @@ Options:
  
  # How to
  
- <img src="https://imgur.com/ldvddv1" width="800" height="600" />
+ <img src="https://i.imgur.com/ldvddv1.gif" width="800" height="600" />
  
  Assumes you have already connected your local computer somehow to the go pro wifi!
  
