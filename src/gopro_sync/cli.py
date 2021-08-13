@@ -27,6 +27,7 @@ _choices = list(map(desanitize, list(MediaType)))
     "--sync-path",
     default=Path("./gopro-media"),
     type=click.Path(writable=True),
+    path_type=Path,
     show_default=True,
     help="Export files to local  path",
 )
